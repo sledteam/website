@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>1v1.LOL - Online Building Simulator</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118283086-6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118283086-6');
+    </script>
+    <script>
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+		if(/bot|crawler|spider|crawling/i.test(userAgent)) {
+            // do nothing
+        }
+		
+        // Windows Phone
+        else if (/windows phone/i.test(userAgent)) {
+            window.location.replace("/mobile");
+        }
+
+        // Android
+        else if (/android/i.test(userAgent)) {
+            window.location.replace("/mobile");
+        }
+
+        // iOS
+        else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            window.location.replace("/mobile");
+        }
+		
+		var showingAds = false;
+		/*window.addEventListener("beforeunload", function (e) {
+			if(showingAds)
+				return null;
+			var confirmationMessage = 'Are you sure you want to leave? ';
+			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+			return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+		});*/
+    </script>
+    <link rel='shortcut icon' type="image/png" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Practice your battle royale skills with the 1v1.lol online building training simulator, just build lol! multiplayer justbuild.lol">
+    <meta name="keywords" content="just build lol,simulator,building,practice,train,free,online,battle royale">
+	<script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+	<script type="text/javascript" src="ads.js?v=6"></script>
+	<link rel="stylesheet" href="style.css">
+	<style>
+	.ad-rectangle-top {
+		top: 50%;
+		right: 0;
+		width: 310px;
+		height: 270px;
+		margin: -261px 0;
+		border-style: solid;
+		border-width: 10px 0px 10px 10px;
+		border-color: rgba(0,0,0,0.01);
+	}
+
+	.ad-rectangle-bottom {
+		top: 50%;
+		right: 0;
+		width: 310px;
+		height: 260px;
+		margin: 9px 0;
+		border-style: solid;
+		border-width: 0px 0px 0px 10px;
+		border-color: rgba(0,0,0,0.01);
+	}
+	
+	.ad-leaderboard-top {
+		top: 0;
+		left: 50%;
+		width: 748px;
+		height: 100px;
+		margin: 0 0 0 -364px;
+		border-style: solid;
+		border-width: 0px 10px 10px 10px;
+		border-color: rgba(0, 0, 0, 0.01);
+	}
+	
+	.ad-leaderboard-bottom {
+		bottom: 0;
+		left: 50%;
+		width: 748px;
+		height: 100px;
+		margin: 0 0 0 -403px;
+		border-style: solid;
+		border-width: 10px 10px 0px 10px;
+		border-color: rgba(0, 0, 0, 0.01);
+	}
+	
+	@media screen and (max-width: 1200px) {
+		.ad-leaderboard-bottom {
+			display: none !important;
+		}
+	}
+	
+	<!-- .ad	{ -->
+		<!-- background: rgba(0, 0, 0, 0)!important; -->
+		<!-- border-color: rgba(0, 0, 0, 0.0)!important; -->
+	<!-- } -->
+	
+	#adWindow{
+		border: 10px solid #4382f5!important;
+		height: 500px!important;
+	}
+	
+	a[onclick*="showConsentToolSettings"]{
+		right: 0px;
+		left: auto !important;
+	}
+	
+	</style>
+	<!-- AdinPlay Ads -->
+	<script>
+	var aiptag = aiptag || {};
+	aiptag.cmd = aiptag.cmd || [];
+	aiptag.cmd.display = aiptag.cmd.display || [];
+	aiptag.cmd.player = aiptag.cmd.player || [];
+	
+	aiptag.gdprShowConsentTool = true;
+	aiptag.gdprShowConsentToolButton = true;
+	aiptag.gdprConsentToolPosition = "bottom";
+	
+	</script>
+	<script async src="//api.adinplay.com/libs/aiptag/pub/JBL/1v1.lol/tag.min.js"></script>
+</head>
+
+<body>
+	<div id="generalModal" class="modal">
+		<div id="generalModalContent" class="modalContent"></div>
+	</div>
+	
+	<div id="adsModal" class="modal">
+		<div id="content" class="modalContent">
+			<div id="adContainer"></div>
+			<video id="contentElement" hidden></video>
+		</div>
+	</div>
+	
+    <div id="gameContainer"></div>
+    <div id="loader">
+        <img class="logo" src="logo.png">
+        <div class="spinner"></div>
+        <div class="progress">
+            <div class="full"></div>
+        </div>
+    </div>
+	
+	<div class="ad ad-rectangle-top" id="adRectangleTop">
+    </div>
+    <div class="ad ad-rectangle-bottom" id="adRectangleBottom">
+    </div>
+	<div class="ad ad-leaderboard-bottom" id="adLeaderboardBottom">
+    </div>
+	
+	<script>
+		function createAdInPlayAd(adId, container){
+			var newDiv = document.createElement("div");
+			newDiv.id = adId;
+			newDiv = container.appendChild(newDiv);
+			var newScript = document.createElement("script");
+			newScript.type = 'text/javascript';
+			var inlineScript = document.createTextNode("aiptag.cmd.display.push(function() { aipDisplayTag.display('" + adId + "'); });");
+			newScript.appendChild(inlineScript);
+			newDiv.appendChild(newScript);
+		}
+		
+		function createAdsenseAd(adId, container, adStyle){
+			var asyncScript = document.createElement("script");
+			asyncScript.async = true;
+			asyncScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+			var insClass =  document.createElement("ins");
+			insClass.style = adStyle;
+			insClass.setAttribute("class", "adsbygoogle");
+			insClass.setAttribute("data-ad-client", "ca-pub-9619368648213417");
+			insClass.setAttribute("data-ad-slot", adId);
+			var newScript = document.createElement("script");
+			var inlineScript = document.createTextNode("(adsbygoogle = window.adsbygoogle || []).push({});");
+			newScript.appendChild(inlineScript);
+			
+			container.appendChild(asyncScript);
+			container.appendChild(insClass);
+			container.appendChild(newScript);
+		}
+		
+		function createAdManagerAd(adId, container, adStyle, slotId, refresh, adSizes){
+			// head
+			var asyncScript = document.createElement("script");
+			asyncScript.async = true;
+			asyncScript.src = "https://securepubads.g.doubleclick.net/tag/js/gpt.js";
+			var newScript2 = document.createElement("script");
+			var inlineScript2 = document.createTextNode("window.googletag = window.googletag || {cmd: []}; googletag.cmd.push(function() { googletag.defineSlot('" + slotId + "', " + adSizes + ", '" + adId + "').setTargeting('refresh', ['" + refresh + "']).addService(googletag.pubads()); googletag.pubads().enableSingleRequest(); googletag.enableServices(); });");
+			newScript2.appendChild(inlineScript2);
+			
+			var head = document.getElementsByTagName('head')[0];
+			head.appendChild(asyncScript);
+			head.appendChild(newScript2);
+			
+			// body
+			var newDiv = document.createElement("div");
+			newDiv.id = adId;
+			newDiv.style = adStyle;
+			newDiv = container.appendChild(newDiv);
+			var newScript = document.createElement("script");
+			var inlineScript = document.createTextNode("googletag.cmd.push(function() { googletag.display('" + adId + "'); });");
+			newScript.appendChild(inlineScript);
+			newDiv.appendChild(newScript);
+			
+			container.appendChild(newDiv);
+		}
+	
+		var topRectangleAd = document.getElementById("adRectangleTop");
+		var bottomRectangleAd = document.getElementById("adRectangleBottom");
+		var bottomLeaderboardAd = document.getElementById("adLeaderboardBottom");
+		var useRefresh = false;
+		var useAdInPlay = false;
+		var useAdManager = false;
+		var number = Math.random();
+		console.log(number);
+		
+		
+		if(number <= 1){
+			console.log("Showing AdInPlay with refresh");
+			useRefresh = true;
+			useAdInPlay = true;
+			createAdInPlayAd('1v1-lol_300x250', topRectangleAd);
+			createAdInPlayAd('1v1-lol_300x250_2', bottomRectangleAd);
+			createAdInPlayAd('1v1-lol_728x90', bottomLeaderboardAd);
+		}
+		/*else if(number <= 0.5){
+			console.log("Showing AdManager without refresh");
+			useAdManager = true;
+			createAdManagerAd('div-gpt-ad-1573555628917-0', topRectangleAd, "width:300px;height:250px", "/21834398356/justbuildlolXrectangleTop", "false", "[300, 250]");
+			createAdManagerAd('div-gpt-ad-1573556407345-0', bottomRectangleAd, "width:300px;height:250px", "/21834398356/justbuildlolXrectangleBottom", "false", "[300, 250]");
+			createAdManagerAd('div-gpt-ad-1573556451269-0', bottomLeaderboardAd, "width:728px;height:90px", "/21834398356/justbuildlolXleaderboardBottom", "false", "[728, 90]");
+		}*/
+		else{
+			console.log("Showing AdManager with refresh");
+			useRefresh = true;
+			useAdManager = true;
+			createAdManagerAd('div-gpt-ad-1575582517132-0', topRectangleAd, "width:300px;height:250px", "/21834398356/1v1lolXrectangleTop", "true", "[300, 250]");
+			createAdManagerAd('div-gpt-ad-1575582741449-0', bottomRectangleAd, "width:300px;height:250px", "/21834398356/1v1lolXrectangleBottom", "true", "[300, 250]");
+			createAdManagerAd('div-gpt-ad-1575582772590-0', bottomLeaderboardAd, "width:728px;height:90px", "/21834398356/1v1lolXleaderboardBottom", "true", "[728, 90]");
+		}
+		/*else{
+			console.log("Showing adsense");
+			createAdsenseAd('1098575085', topRectangleAd, "display:inline-block;width:300px;height:250px");
+			createAdsenseAd('6350901768', bottomRectangleAd, "display:inline-block;width:300px;height:250px");
+			createAdsenseAd('8777561036', bottomLeaderboardAd, "display:inline-block;width:728px;height:90px");
+		}*/
+		
+		/*if(number <= 0.5){
+			console.log("Showing AdInPlay with refresh");
+			useRefresh = true;
+			useAdInPlay = true;
+			createAdInPlayAd('justbuild-lol_300x250', topRectangleAd);
+			createAdInPlayAd('justbuild-lol_300x250_2', bottomRectangleAd);
+			createAdInPlayAd('justbuild-lol_728x90', bottomLeaderboardAd);
+		}*/
+		/*else if(number <= 0.5){
+			console.log("Showing AdInPlay without refresh");
+			useAdInPlay = true;
+			createAdInPlayAd('justbuild-lol_300x250_3', topRectangleAd);
+			createAdInPlayAd('justbuild-lol_300x250_4', bottomRectangleAd);
+			createAdInPlayAd('justbuild-lol_728x90_2', bottomLeaderboardAd);
+		}*/
+		/*else{
+			console.log("Showing adsense");
+			createAdsenseAd('1098575085', topRectangleAd, "display:inline-block;width:300px;height:250px");
+			createAdsenseAd('6350901768', bottomRectangleAd, "display:inline-block;width:300px;height:250px");
+			createAdsenseAd('8777561036', bottomLeaderboardAd, "display:inline-block;width:728px;height:90px");
+		}*/
+		
+		/* View in fullscreen */
+		var elem = document.documentElement;
+		function openFullscreen() {
+		  if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		  } else if (elem.mozRequestFullScreen) { /* Firefox */
+			elem.mozRequestFullScreen();
+		  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+			elem.webkitRequestFullscreen();
+		  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+			elem.msRequestFullscreen();
+		  }
+		}
+		
+		/* Close fullscreen */
+		function closeFullscreen() {
+		  if (document.exitFullscreen) {
+			document.exitFullscreen();
+		  } else if (document.mozCancelFullScreen) { /* Firefox */
+			document.mozCancelFullScreen();
+		  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+			document.webkitExitFullscreen();
+		  } else if (document.msExitFullscreen) { /* IE/Edge */
+			document.msExitFullscreen();
+		  }
+		}
+		
+		function updateFullscreen(){
+			var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+			(document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+			(document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+			(document.msFullscreenElement && document.msFullscreenElement !== null);
+			if(!isInFullScreen)
+				openFullscreen();
+			else
+				closeFullscreen();
+		}
+	</script>
+
+	<script src="https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0532/Build/UnityLoader.js"></script>
+    <!-- <script src="Build/UnityLoader.js"></script> -->
+    <script>
+        var gameInstance = UnityLoader.instantiate("gameContainer", "https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0532/Build/WebGL.json", {onProgress: UnityProgress});
+        // var gameInstance = UnityLoader.instantiate("gameContainer", "Build/WebGL.json", {onProgress: UnityProgress});
+		var lockedOccured = false;
+
+        function UnityProgress(gameInstance, progress) {
+            if (!gameInstance.Module) {
+                return;
+            }
+            const loader = document.querySelector("#loader");
+            if (!gameInstance.progress) {
+                const progress = document.querySelector("#loader .progress");
+                progress.style.display = "block";
+                gameInstance.progress = progress.querySelector(".full");
+                loader.querySelector(".spinner").style.display = "none";
+            }
+            gameInstance.progress.style.transform = `scaleX(${progress})`;
+            if (progress === 1 && !gameInstance.removeTimeout) {
+                loader.style.display = "none";
+            }
+        }
+
+        document.addEventListener('pointerlockchange', lockChangeAlert, false);
+        document.addEventListener('mozpointerlockchange', lockChangeAlert, false);	
+
+        function lockChangeAlert() {				
+			if(!lockedOccured && document.pointerLockElement)
+				lockedOccured = true;
+            if (!document.pointerLockElement && lockedOccured)
+                gameInstance.SendMessage("Pause Menu", "PauseGame");
+        }
+		
+		var needRefresh = false;
+
+        function showAds() {
+			showingAds = true;
+			if(useAdInPlay || useAdManager)
+				aipAPItag.showConsentToolButton();
+				
+            document.getElementById("adRectangleTop").style.display = "block";
+			document.getElementById("adRectangleBottom").style.display = "block";
+            document.getElementById("adLeaderboardBottom").style.display = "block";
+					
+			refresh();
+        }
+
+        function hideAds() {
+			showingAds = false;
+			if(useAdInPlay || useAdManager)
+				aipAPItag.hideConsentToolButton();
+				
+            document.getElementById("adRectangleTop").style.display = "none";
+			document.getElementById("adRectangleBottom").style.display = "none";
+            document.getElementById("adLeaderboardBottom").style.display = "none";
+        }
+		
+		var refreshTime = new Date();
+		
+		function refresh(){
+		
+			if(!useRefresh || !needRefresh){
+				needRefresh = true;
+				return;
+			}
+			
+		
+			var timeSinceRefresh = new Date() - refreshTime; //in ms
+			if(timeSinceRefresh < 30*1000){
+				console.log("don't refresh, time since last refresh " + timeSinceRefresh / 1000 + " seconds");
+				return;
+			}
+		
+			if(useAdInPlay){
+				aiptag.cmd.display.push(function() {
+					aipDisplayTag.display('1v1-lol_300x250');
+					aipDisplayTag.display('1v1-lol_300x250_2');
+					aipDisplayTag.display('1v1-lol_728x90');
+				});
+			}
+			else if(useAdManager){
+				if(googletag && googletag.pubads) // null when adblock is enabled
+					googletag.pubads().refresh();
+			}
+			
+			refreshTime = new Date();
+			console.log("refresh ads");
+		}
+
+		window.onfocus = function() {
+			refresh();
+		};
+    </script>
+	<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+
+	<!-- Add Firebase products that you want to use -->
+	<script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-firestore.js"></script>
+	
+	<script src="firebase.js"></script>
+	<script src="login.js"></script>
+	<script src="fireStore.js"></script>
+	
+	<script>
+		// initializeFireBase();
+		// initializeFirestore();
+	</script>
+</body>
+
+</html>
