@@ -38,13 +38,13 @@
         }
 		
 		var showingAds = false;
-		/*window.addEventListener("beforeunload", function (e) {
+		window.addEventListener("beforeunload", function (e) {
 			if(showingAds)
 				return null;
 			var confirmationMessage = 'Are you sure you want to leave? ';
 			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
 			return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-		});*/
+		});
     </script>
     <link rel='shortcut icon' type="image/png" href="favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -229,7 +229,7 @@
 		console.log(number);
 		
 		
-		if(number <= 1){
+		if(number <= 0.1){
 			console.log("Showing AdInPlay with refresh");
 			useRefresh = true;
 			useAdInPlay = true;
@@ -320,10 +320,10 @@
 		}
 	</script>
 
-	<script src="https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0532/Build/UnityLoader.js"></script>
+	<script src="https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.065/Build/UnityLoader.js"></script>
     <!-- <script src="Build/UnityLoader.js"></script> -->
     <script>
-        var gameInstance = UnityLoader.instantiate("gameContainer", "https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0532/Build/WebGL.json", {onProgress: UnityProgress});
+        var gameInstance = UnityLoader.instantiate("gameContainer", "https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.065/Build/WebGL.json", {onProgress: UnityProgress});
         // var gameInstance = UnityLoader.instantiate("gameContainer", "Build/WebGL.json", {onProgress: UnityProgress});
 		var lockedOccured = false;
 
@@ -426,7 +426,7 @@
 	<script src="https://sledteam.github.io/TechBoard/fireStore.js"></script>
 	
 	<script>
-		// initializeFireBase();
+		initializeFireBase();
 		// initializeFirestore();
 	</script>
 </body>
