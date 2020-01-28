@@ -38,8 +38,9 @@
         }
 		
 		var showingAds = false;
+		var gameLoaded = false;
 		window.addEventListener("beforeunload", function (e) {
-			if(showingAds)
+			if(showingAds || !gameLoaded)
 				return null;
 			var confirmationMessage = 'Are you sure you want to leave? ';
 			(e || window.event).returnValue = confirmationMessage; //Gecko + IE
@@ -50,9 +51,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="Practice your battle royale skills with the 1v1.lol online building training simulator, just build lol! multiplayer justbuild.lol">
     <meta name="keywords" content="just build lol,simulator,building,practice,train,free,online,battle royale">
-	<script type="text/javascript" src="https://sledteam.github.io/website/1.js"></script>
-	<script type="text/javascript" src="https://sledteam.github.io/website/2.js"></script>
-	<link rel="stylesheet" href="https://sledteam.github.io/website/style.css">
+	<script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+	<script type="text/javascript" src="ads.js?v=6"></script>
+	<link rel="stylesheet" href="style.css">
 	<style>
 	.ad-rectangle-top {
 		top: 50%;
@@ -229,7 +230,7 @@
 		console.log(number);
 		
 		
-		if(number <= 0.1){
+		if(number <= 0.01){
 			console.log("Showing AdInPlay with refresh");
 			useRefresh = true;
 			useAdInPlay = true;
@@ -320,10 +321,10 @@
 		}
 	</script>
 
-	<script src="https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.065/Build/UnityLoader.js"></script>
+	<script src="https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0698/Build/UnityLoader.js"></script>
     <!-- <script src="Build/UnityLoader.js"></script> -->
     <script>
-        var gameInstance = UnityLoader.instantiate("gameContainer", "https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.065/Build/WebGL.json", {onProgress: UnityProgress});
+        var gameInstance = UnityLoader.instantiate("gameContainer", "https://justbuild.nyc3.cdn.digitaloceanspaces.com/1v1-1.0698/Build/WebGL.json", {onProgress: UnityProgress});
         // var gameInstance = UnityLoader.instantiate("gameContainer", "Build/WebGL.json", {onProgress: UnityProgress});
 		var lockedOccured = false;
 
@@ -341,8 +342,19 @@
             gameInstance.progress.style.transform = `scaleX(${progress})`;
             if (progress === 1 && !gameInstance.removeTimeout) {
                 loader.style.display = "none";
+				gameLoaded = true;
             }
         }
+		
+		document.onkeydown = function(e) {
+			if (e.altKey || e.ctrlKey || e.key == "F1" || e.key == "F2" || e.key == "F3" || e.key == "F4") {
+				e.preventDefault();
+			}
+		}
+
+		document.onmouseup = function(e) {
+			e.preventDefault();
+		}
 
         document.addEventListener('pointerlockchange', lockChangeAlert, false);
         document.addEventListener('mozpointerlockchange', lockChangeAlert, false);	
